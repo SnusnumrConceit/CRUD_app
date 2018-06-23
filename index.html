@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    </head>
+    <body>
+        <main id="main">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="functional-container">
+                            <button class="btn btn-outline-success" 
+                                    type="button"
+                                    @click="showForm">
+                                Добавить
+                            </button>
+                            <div class="creator-container" v-show="show">
+                                <form method="POST">
+                                    <div class="form-group">
+                                        <label for="lastName">Фамилия</label>
+                                        <input type="text"
+                                                v-model="newUser.lastName"
+                                                class="form-control"
+                                                required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="firstName">Имя</label>
+                                        <input type="text"
+                                                v-model="newUser.firstName"
+                                                class="form-control"
+                                                required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="middleName">Отчество</label>
+                                        <input type="text"
+                                                v-model="newUser.middleName"
+                                                class="form-control"
+                                                required>
+                                    </div>
+                                    <button type="button" 
+                                            class="btn btn-success"
+                                            @click="add">Создать</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <table class="table">
+                            <thead>
+                                <th>Фамилия</th>
+                                <th>Имя</th>
+                                <th>Отчество</th>
+                            </thead>
+                            <tbody>
+                                <user  v-for="(user, index, key) in users"
+                                            id='user-container'
+                                            :user="user"
+                                            :index="index"
+                                            :key="key"
+                                            :users="users">
+                                
+                                </user>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script>
+            new Vue({
+                el: '#main',
+                
+                props: {
+                    show: {
+                        default: false,
+                        type: Boolean
+                    },
+                },
+
+                data() {
+                    return {
+                        newUser: {
+                            lastName: '',
+                            firstName: '',
+                            middleName: ''
+                        },
+                        users: []
+                    }
+                },
+
+                methods: {
+                    add() {
+                        this.users.push({...this.newUser});
+                        console.log(this.users);
+                    },
+
+                    showForm() {
+                        this.show  = !this.show;
+                    }
+                },
+
+                computed: {
+
+                }
+
+            });
+            let user = Vue.component('user', {
+                template: '<tr><td v-show="!this.isEditing">{{ user.lastName}}</td><td v-show="this.isEditing"><input type="text" v-model="user.lastName"></td><td v-show="!this.isEditing">{{ user.firstName}}</td><td v-show="this.isEditing"><input type="text" v-model="user.firstName"></td><td v-show="!this.isEditing">{{ user.middleName}}</td><td v-show="this.isEditing"><input type="text" v-model="user.middleName"></td><td v-show="!this.isEditing"><button class="btn btn-outline-warning"type="button"@click="edit(index)">Изменить</button><button class="btn btn-outline-danger" type="button"@click="deleteUser(index)">Удалить</button></td><td v-show="this.isEditing"><button class="btn btn-primary" @click="startEdit(index)">Принять</button></td></tr>',
+                props: {
+                    user: {},
+                    isEditing: false,
+                    index: 0,
+                    users: {}
+                },
+
+                methods: {
+                    deleteUser(index) {
+                        console.log(this.users);
+                        delete this.users[index];   
+                    },
+
+                    edit(index) {
+                        this.isEditing = !this.isEditing;
+                    },
+
+                    startEdit(index) {
+                        this.isEditing = !this.isEditing;
+                    }
+                }
+            })
+        </script>
+    </body>
+</html>
